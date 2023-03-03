@@ -24,15 +24,15 @@ void init_array()
 void print_array (const bool (&array) [10][10], const char &player)
 {
     cout << "Player " << player << " view of your field:" << endl;
-    cout << '\t';
-    for (int x=0; x<N; x++) cout << x << '\t';
+    cout << "  ";
+    for (int x=0; x<N; x++) cout << x << ' ';
     cout << endl;
     for (int i=0; i<N; i++)
     {
-        cout << i << '\t';
+        cout << i << ' ';
         for (int j=0; j<N; j++)
         {
-            (array[i][j]) ? cout << 'X' << '\t' : cout << 'O' << '\t';
+            (array[i][j]) ? cout << 'X' << ' ' : cout << 'O' << ' ';
         }
         cout << endl;
     }
@@ -40,7 +40,7 @@ void print_array (const bool (&array) [10][10], const char &player)
 }
 
 //Функция проверки введенных координат
-bool coordinate_check (int x1, int y1, int x2, int y2)
+bool coordinate_check (const int &x1, const int &y1, const int &x2, const int &y2)
 {
     if (x1<0 || x1>N-1 || y1<0 || y1>N-1)
     {
@@ -61,7 +61,7 @@ bool coordinate_check (int x1, int y1, int x2, int y2)
 }
 
 //Функция установки корабля
-bool ship_installation (bool (&array)[10][10], int x1, int y1, int x2, int y2)
+bool ship_installation (bool (&array)[10][10], const int &x1, const int &y1, const int &x2, const int &y2)
 {
     for (int i=y1; i<=y2; i++)
     {
@@ -80,7 +80,7 @@ bool ship_installation (bool (&array)[10][10], int x1, int y1, int x2, int y2)
 }
 
 //Процедура расстановки кораблей
-void arrangement_ships (const char player, bool (&array)[10][10])
+void arrangement_ships (const char &player, bool (&array)[10][10])
 {
     //Инициализация переменных координат
     int x1, y1, x2, y2;
@@ -121,7 +121,7 @@ void arrangement_ships (const char player, bool (&array)[10][10])
             if (!check)
             {
                 //Проверка корабля на палубность
-                if (x2-x1<2 && y2-y1<2) check = ship_installation(array,x1,y1,x2,y2);
+                if (x2-x1==1 ^ y2-y1==1) check = ship_installation(array,x1,y1,x2,y2);
                 else
                 {
                     cout << "The ship is not double-deck! Enter the coordinates again."<< endl;
@@ -150,7 +150,7 @@ void arrangement_ships (const char player, bool (&array)[10][10])
             if (!check)
             {
                 //Проверка корабля на палубность
-                if (x2-x1<3 && y2-y1<3) check = ship_installation(array,x1,y1,x2,y2);
+                if (x2-x1==2 ^ y2-y1==2) check = ship_installation(array,x1,y1,x2,y2);
                 else
                 {
                     cout << "The ship is not three-deck! Enter the coordinates again."<< endl;
@@ -160,56 +160,56 @@ void arrangement_ships (const char player, bool (&array)[10][10])
         } while(check);
     }
 
-    //Расстановка четырехпалубных кораблей
-    for (int i=1; i<2; i++)
+    //Установка четырехпалубного корабля
+    //Выводим поле игрока
+    print_array(array,player);
+    //Инициализация флага ошибки ввода
+    bool check;
+    //Ввод координат
+    do
     {
-        //Выводим поле игрока
-        print_array(array,player);
-        //Инициализация флага ошибки ввода
-        bool check;
-        //Ввод координат
-        do
+        cout << "Enter the coordinates of four-deck ship:" << endl;
+        cout << "Ship start coordinate: ";
+        cin >> x1 >> y1;
+        cout << "End of ship coordinate: ";
+        cin >> x2 >> y2;
+        check = coordinate_check(x1, y1, x2, y2);
+        if (!check)
         {
-            cout << "Enter the coordinates of " << i << " four-deck ship:" << endl;
-            cout << "Ship start coordinate: ";
-            cin >> x1 >> y1;
-            cout << "End of ship coordinate: ";
-            cin >> x2 >> y2;
-            check = coordinate_check(x1, y1, x2, y2);
-            if (!check)
+            //Проверка корабля на палубность
+            if (x2-x1==3 ^ y2-y1==3) check = ship_installation(array,x1,y1,x2,y2);
+            else
             {
-                //Проверка корабля на палубность
-                if (x2-x1<4 && y2-y1<4) check = ship_installation(array,x1,y1,x2,y2);
-                else
-                {
-                    cout << "The ship is not four-deck! Enter the coordinates again."<< endl;
-                    check = true;
-                }
+                cout << "The ship is not four-deck! Enter the coordinates again."<< endl;
+                check = true;
             }
-        } while(check);
-    }
+        }
+    } while(check);
     print_array(array,player);
 }
 
 //Функция хода игрока
-/*void bubble_bursting (int x1, int y1, int x2, int y2)
+bool shot (bool (&array)[10][10], const int &x, const int &y)
 {
-    for (int i=y1-1; i<y2; i++)
+    //Проверка на попадание
+    if (array[y][x])
     {
-        for (int j=x1-1; j<x2; j++)
-        {
-            if (field[i][j])
-            {
-
-                cout << "Pop!" << '\t';
-                field[i][j] = false;
-            }
-        }
-        cout << endl;
+        cout << "HIT!" << endl;
+        array[y][x]= false;
     }
-    cout << endl;
+    else cout << "MISS!" << endl;
+
+    //Проверка игрового поля на окончание игры
+    for (int i=0; i<10; i++)
+    {
+        for (int j=0; j<10; j++)
+        {
+            if (array[i][j]) return false;
+        }
+    }
+    return true;
 }
-*/
+
 int main() {
 
     cout << "------------SEA BATTLE------------\n" << endl;
@@ -220,6 +220,45 @@ int main() {
     arrangement_ships('1',field_1);
     arrangement_ships('2',field_2);
 
+    cout << "------------The battle begins------------\n" << endl;
+
+    //Инициализация переменной номера игрока
+    char player='2';
+
+    //Инициализация конца игры
+    bool endGame=false;
+
+    //Организация цикла игры
+    while (!endGame)
+    {
+        //Определение и смена имени игрока
+        if (player == '2')
+        {
+            player = '1';
+            print_array(field_1,player);
+        }
+        else
+        {
+            player = '2';
+            print_array(field_2,player);
+        }
+
+        //Инициализация координат игрового поля
+        int x, y;
+
+        //Ввод координат хода
+        do
+        {
+            cout << "Player " << player << " enter move coordinates: ";
+            cin >> x >> y;
+        } while(x<0 || x>9 || y<0 || y>9);
+
+        //Ход игрока
+        if (player == '1') endGame=shot(field_2,x,y);
+        else endGame=shot(field_1,x,y);
+    }
+
+    cout << "Player " << player << " WINS!" << endl;
     cout << "GAME OVER!";
 
     return 0;
