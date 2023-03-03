@@ -200,9 +200,9 @@ bool shot (bool (&array)[10][10], const int &x, const int &y)
     else cout << "MISS!" << endl;
 
     //Проверка игрового поля на окончание игры
-    for (int i=0; i<10; i++)
+    for (int i=0; i<N; i++)
     {
-        for (int j=0; j<10; j++)
+        for (int j=0; j<N; j++)
         {
             if (array[i][j]) return false;
         }
@@ -251,7 +251,7 @@ int main() {
         {
             cout << "Player " << player << " enter move coordinates: ";
             cin >> x >> y;
-        } while(x<0 || x>9 || y<0 || y>9);
+        } while(x<0 || x>N-1 || y<0 || y>N-1);
 
         //Ход игрока
         if (player == '1') endGame=shot(field_2,x,y);
