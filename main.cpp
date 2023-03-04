@@ -40,8 +40,15 @@ void print_array (const bool (&array) [10][10], const char &player)
 }
 
 //Функция проверки введенных координат
-bool coordinate_check (const int &x1, const int &y1, const int &x2, const int &y2)
+bool coordinate_check (int &x1, int &y1, int &x2, int &y2)
 {
+    //Проверка координат на возрастание и их перестановка в случае необходимости
+    if (x2-x1<0 || y2-y1<0)
+    {
+        swap (x1,x2);
+        swap (y1,y2);
+    }
+    //Проверка координат на выход за пределы игрового поля
     if (x1<0 || x1>N-1 || y1<0 || y1>N-1)
     {
         cout << "The first coordinate is outside the field. Enter the coordinates again."<< endl;
@@ -52,6 +59,7 @@ bool coordinate_check (const int &x1, const int &y1, const int &x2, const int &y
         cout << "The second coordinate is outside the field. Enter the coordinates again."<< endl;
         return true;
     }
+    //Проверка на диаганальность
     if (x1!=x2 && y1!=y2)
     {
         cout << "Installing a ship diagonally is not allowed! Enter the coordinates again."<< endl;
@@ -63,6 +71,7 @@ bool coordinate_check (const int &x1, const int &y1, const int &x2, const int &y
 //Функция установки корабля
 bool ship_installation (bool (&array)[10][10], const int &x1, const int &y1, const int &x2, const int &y2)
 {
+
     for (int i=y1; i<=y2; i++)
     {
         for (int j=x1; j<=x2; j++)
